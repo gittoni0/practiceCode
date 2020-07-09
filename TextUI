@@ -1,0 +1,125 @@
+
+import java.util.Scanner;
+import java.util.List;
+
+public class TextUI {
+
+    private Scanner reader;
+    private ContactList contactList;
+
+    public TextUI() {
+        this.reader = new Scanner(System.in);
+        this.contactList = new ContactList();
+    }
+
+    public void start() {
+        giveOptions();
+    }
+
+    public void giveOptions() {
+        System.out.println("phone search\n" + "available operations:\n" + " 1 add a number\n" + " 2 search for a number\n" + " 3 search for a person by phone number\n" + " 4 add an address\n" + " 5 search for personal information\n" + " 6 delete personal information\n" + " 7 filtered listing\n" + " x quit");
+        while (true) {
+            String command = "";
+            System.out.print("\ncommand: ");
+            command = reader.nextLine();
+            if (command.equals("1")) {
+                addNumber();
+            } else if (command.equals("2")) {
+                searchForNumber();
+            } else if (command.equals("3")) {
+                searchForName();
+            } else if (command.equals("4")) {
+                addAnAddress();
+            } else if (command.equals("5")) {
+                searchForInfo();
+            } else if (command.equals("6")) {
+                removeInfo();
+            } else if (command.equals("7")) {
+                filteredSearch();
+            } else {
+                break;
+            }
+        }
+    }
+
+    public void addNumber() {
+        //command 1: add name and number
+        System.out.print("whose number: ");
+        String name = reader.nextLine();
+        System.out.print("number: ");
+        String number = reader.nextLine();
+        contactList.addContact(name);
+        contactList.getPersonObject(name).addNumber(number);
+    }
+
+    public void searchForNumber() {
+        //command #2 - search for name and get number;
+        System.out.print("whose number: ");
+        String name = reader.nextLine();
+        try {
+            System.out.println(contactList.getPersonObject(name).getNumber());
+        } catch (Exception e) {
+            System.out.println("  not found");
+        }
+    }
+
+    public void searchForName() {
+        //command #3 - search for number and get name;
+        System.out.print("number: ");
+        String number = reader.nextLine();
+        for (Person c : contactList.getValues()) {
+            if (c.getNumber().contains(number)) {
+                System.out.println("  " + c.getName());
+                return;
+            }
+        }
+        System.out.println("  not found");
+    }
+
+    public void addAnAddress() {
+        //command #4 - add a street and city
+        System.out.print("whose address: ");
+        String name = reader.nextLine();
+        System.out.print("street: ");
+        String street = reader.nextLine();
+        System.out.print("city: ");
+        String city = reader.nextLine();
+        String address = street + " " + city;
+        //contactList.addContact(name);
+        contactList.addContact(name);
+        contactList.getPersonObject(name).addAddress(address);
+    }
+
+    public void searchForInfo() {
+        //command #5 - input name, get information
+        System.out.print("whose information: ");
+        String name = reader.nextLine();
+        try {
+            System.out.println(contactList.getPersonObject(name).toString());
+        } catch (Exception e) {
+            System.out.println("  not found");
+        }
+    }
+
+    public void removeInfo() {
+        //command #6 - remove info
+        System.out.print("whose information: ");
+        String name = reader.nextLine();
+        contactList.removeContact(name);
+    }
+
+    public void filteredSearch() {
+        //command #7
+        System.out.print("keyword (if empty, all listed): ");
+        String keyword = reader.nextLine();
+        if (!(contactList.getMatch(keyword).isEmpty())) {
+            for (Person l : contactList.getMatch(keyword)) {
+                System.out.println(l.getName());
+                System.out.println(l.toString());
+            }
+        } 
+        else if (contactList.getMatch(keyword).isEmpty()) {
+           System.out.println("keyword not found"); 
+        }
+    }
+}
